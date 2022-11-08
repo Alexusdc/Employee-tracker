@@ -17,7 +17,7 @@ const db = mysql.createConnection(
 // function which prompts the user for what action they should take
 function firstPrompt() {
 
-inquirer
+inq
   .prompt({
     type: "list",
     name: "task",
@@ -78,7 +78,7 @@ ON d.id = r.department_id
 LEFT JOIN employee m
 ON m.id = e.manager_id`
 
-connection.query(query, function (err, res) {
+db.query(query, function (err, res) {
   if (err) throw err;
 
   console.table(res);
@@ -103,7 +103,7 @@ LEFT JOIN department d
 ON d.id = r.department_id
 GROUP BY d.id, d.name`
 
-connection.query(query, function (err, res) {
+db.query(query, function (err, res) {
   if (err) throw err;
 
   const departmentChoices = res.map(data => ({
@@ -120,7 +120,7 @@ connection.query(query, function (err, res) {
 // User choose the department list, then employees pop up
 function promptDepartment(departmentChoices) {
 
-inquirer
+inq
   .prompt([
     {
       type: "list",
@@ -161,7 +161,7 @@ var query =
   `SELECT r.id, r.title, r.salary 
     FROM role r`
 
-connection.query(query, function (err, res) {
+db.query(query, function (err, res) {
   if (err) throw err;
 
   const roleChoices = res.map(({ id, title, salary }) => ({
@@ -177,7 +177,7 @@ connection.query(query, function (err, res) {
 
 function promptInsert(roleChoices) {
 
-inquirer
+inq
   .prompt([
     {
       type: "input",
@@ -201,7 +201,7 @@ inquirer
 
     var query = `INSERT INTO employee SET ?`
     // when finished prompting, insert a new item into the db with that info
-    connection.query(query,
+    db.query(query,
       {
         first_name: answer.first_name,
         last_name: answer.last_name,
@@ -228,7 +228,7 @@ var query =
   `SELECT e.id, e.first_name, e.last_name
     FROM employee e`
 
-connection.query(query, function (err, res) {
+db.query(query, function (err, res) {
   if (err) throw err;
 
   const deleteEmployeeChoices = res.map(({ id, first_name, last_name }) => ({
@@ -245,7 +245,7 @@ connection.query(query, function (err, res) {
 // User choose the employee list, then employee is deleted
 function promptDelete(deleteEmployeeChoices) {
 
-inquirer
+inq
   .prompt([
     {
       type: "list",
@@ -258,7 +258,7 @@ inquirer
 
     var query = `DELETE FROM employee WHERE ?`;
     // when finished prompting, insert a new item into the db with that info
-    connection.query(query, { id: answer.employeeId }, function (err, res) {
+    db.query(query, { id: answer.employeeId }, function (err, res) {
       if (err) throw err;
 
       console.table(res);
@@ -288,7 +288,7 @@ ON d.id = r.department_id
 JOIN employee m
 ON m.id = e.manager_id`
 
-connection.query(query, function (err, res) {
+db.query(query, function (err, res) {
   if (err) throw err;
 
   const employeeChoices = res.map(({ id, first_name, last_name }) => ({
@@ -310,7 +310,7 @@ var query =
 FROM role r`
 let roleChoices;
 
-connection.query(query, function (err, res) {
+db.query(query, function (err, res) {
   if (err) throw err;
 
   roleChoices = res.map(({ id, title, salary }) => ({
@@ -326,7 +326,7 @@ connection.query(query, function (err, res) {
 
 function promptEmployeeRole(employeeChoices, roleChoices) {
 
-inquirer
+inq
   .prompt([
     {
       type: "list",
@@ -374,7 +374,7 @@ var query =
   ON d.id = r.department_id
   GROUP BY d.id, d.name`
 
-connection.query(query, function (err, res) {
+db.query(query, function (err, res) {
   if (err) throw err;
 
   // (callbackfn: (value: T, index: number, array: readonly T[]) => U, thisArg?: any)
@@ -391,7 +391,7 @@ connection.query(query, function (err, res) {
 
 function promptAddRole(departmentChoices) {
 
-inquirer
+inq
   .prompt([
     {
       type: "input",
@@ -414,7 +414,7 @@ inquirer
 
     var query = `INSERT INTO role SET ?`
 
-    connection.query(query, {
+    db.query(query, {
       title: answer.title,
       salary: answer.salary,
       department_id: answer.departmentId
@@ -430,3 +430,5 @@ inquirer
 
   });
 }
+
+firstPrompt()
